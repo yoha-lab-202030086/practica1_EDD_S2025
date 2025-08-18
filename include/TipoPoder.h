@@ -8,7 +8,8 @@ enum class TipoPoder{
     TRAMPA_SECRETA,
     BLOQUEO,
     PASE,
-    LLAVE_SECRETA
+    LLAVE_SECRETA,
+    NINGUNO
 };
 
 //FUNCION QUE CONVIERTE UN PODER EN UN STRING LEGIBLE
@@ -20,6 +21,7 @@ inline std::string poderAString(TipoPoder poder){
     case TipoPoder::LLAVE_SECRETA: return "Llave secreta";
     case TipoPoder::PASE: return "Pase";
     case TipoPoder::TRAMPA_SECRETA: return "Trampa secreta";
+    case TipoPoder::NINGUNO:         return "Ninguno";
     default:                    return "desconocido";
     }
 }

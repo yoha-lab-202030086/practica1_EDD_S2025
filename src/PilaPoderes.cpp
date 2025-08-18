@@ -42,7 +42,7 @@ TipoPoder PilaPoderes::quitar(){
 }
 
 TipoPoder PilaPoderes::verCima()const{
-    if(estaVacia){
+    if(estaVacia()){
         throw out_of_range("Error: Intentando hacer pop en una pila vacia.");
     }
 
@@ -63,7 +63,7 @@ void PilaPoderes::imprimirPila()const{
     NodoPila* actual=this->cima;
     while (actual!=nullptr)
     {
-        cout << "[" << poderAString(actual->poder) << "] -> ";
+        cout << "[" << poderAString(actual->poder) << "] -> "<<endl;
         actual=actual->abajo;
     }
     

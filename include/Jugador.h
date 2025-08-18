@@ -1,7 +1,7 @@
 #ifndef JUGADOR_H
 #define JUGADOR_H
 #include <string>
-
+#include "PilaPoderes.h"
 using namespace std;
 
 class Jugador{
@@ -9,7 +9,7 @@ private:
     string nombre;
     char inicial;
     int puntaje;
-    //PilaPoderes* poderes;
+    PilaPoderes* poderes;
 
 public:
     //Constructor y destructor
@@ -25,6 +25,17 @@ public:
     int getPuntaje() const;
 
     void incrementarPuntaje();
+
+
+    void agregarPoder(TipoPoder p);
+
+    TipoPoder usarPoder();
+
+    void verPoderes()const;
+
+    bool tienePoderes()const;
+
+
 };
 
 

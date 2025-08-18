@@ -1,16 +1,16 @@
 #include "Jugador.h"
-#include "PilaPoderes.h"
+#include <iostream>
 
 Jugador::Jugador(){
     this->nombre="N/A";
     this->inicial='?';
     this->puntaje=0;
-
-    //this->poderes=new PilaPoderes();
+    this->poderes=new PilaPoderes();
 }
 
 Jugador::~Jugador(){
 
+    delete this->poderes;
 }
 
 
@@ -36,4 +36,33 @@ int Jugador::getPuntaje()const {
 
 void Jugador::incrementarPuntaje(){
     this->puntaje++;
+}
+
+
+void Jugador::agregarPoder(TipoPoder p){
+    cout<< this->nombre << " ha obtenido el poder: " << poderAString(p) << std::endl;
+
+    this->poderes->agregar(p);
+
+}
+TipoPoder Jugador::usarPoder(){
+    if(this->poderes->estaVacia()){
+        cerr<<" Error: "<<this->nombre<<" No tiene poderes "<<endl;
+
+    }
+    TipoPoder poderUsado=this->poderes->quitar();
+    cout<<this->nombre<<" Ha usado el poder: "<< poderAString(poderUsado)<<endl;
+
+    return poderUsado;
+}
+
+void Jugador::verPoderes()const{
+    this->poderes->imprimirPila();
+}
+
+
+bool Jugador::tienePoderes()const{
+    
+    return this->poderes->estaVacia();
+    
 }
