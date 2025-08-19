@@ -60,24 +60,24 @@ NodoPunto* Tablero::getNodo(int r, int c) const {
     return actual;
 }
 
-bool Tablero::dibujarLinea(int r1, int c1, int r2, int c2, Jugador* jugador, TipoPoder poderAplicado) {
+bool Tablero::dibujarLinea(int fila1, int columna1, int fial2, int columna2, Jugador* jugador, TipoPoder poderAplicado) {
     // Validaciones básicas
-    if (r1 < 0 || r1 >= alto || c1 < 0 || c1 >= ancho || r2 < 0 || r2 >= alto || c2 < 0 || c2 >= ancho) {
+    if (fila1 < 0 || fila1 >= alto || columna1 < 0 || columna1 >= ancho || fial2 < 0 || fial2 >= alto || columna2 < 0 || columna2 >= ancho) {
         std::cout << "[ERROR] Coordenadas fuera de los límites." << std::endl;
         return false;
     }
-    if ((abs(r1 - r2) + abs(c1 - c2)) != 1) {
+    if ((abs(fila1 - fial2) + abs(columna1 - columna2)) != 1) {
         std::cout << "[ERROR] Los puntos no son adyacentes." << std::endl;
         return false;
     }
 
-    // Aseguramos que (r1, c1) sea el punto de origen (arriba o a la izquierda)
-    if (r2 < r1 || c2 < c1) { std::swap(r1, r2); std::swap(c1, c2); }
+    // Aseguramos que (fila1, columna) sea el punto de origen (arriba o a la izquierda)
+    if (fial2 < fila1 || columna2 < columna1) { std::swap(fila1, fial2); std::swap(columna1, columna2); }
     
-    NodoPunto* origen = getNodo(r1, c1);
+    NodoPunto* origen = getNodo(fila1, columna1);
 
     // Dibujar línea horizontal
-    if (r1 == r2) {
+    if (fila1 == fial2) {
         if (origen->lineaHaciaDerecha) {
             std::cout << "[ERROR] La linea ya existe." << std::endl;
             return false;
@@ -99,7 +99,7 @@ bool Tablero::dibujarLinea(int r1, int c1, int r2, int c2, Jugador* jugador, Tip
 }
 
 
-// NUEVA IMPLEMENTACIÓN de la verificación
+// implementacion de la verificación
 int Tablero::verificarYAsignarCaja(int r_linea, int c_linea, bool esHorizontal, Jugador* jugadorActual) {
     int cajasCerradas = 0;
     

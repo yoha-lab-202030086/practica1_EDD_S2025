@@ -56,7 +56,7 @@ bool PilaPoderes::estaVacia()const{
 
 void PilaPoderes::imprimirPila()const{
     if(estaVacia()){
-        cout<<"La pila esta vacia"<<endl;
+        cout<<"[No hay poderes]"<<endl;
         return;
     }
     cout<<"Poderes: ";
