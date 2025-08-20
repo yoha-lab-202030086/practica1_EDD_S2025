@@ -63,7 +63,7 @@ void PilaPoderes::imprimirPila()const{
     NodoPila* actual=this->cima;
     while (actual!=nullptr)
     {
-        cout << "[" << poderAString(actual->poder) << "] -> "<<endl;
+        cout << "[" << poderAString(actual->poder) << "] -> ";
         actual=actual->abajo;
     }
     

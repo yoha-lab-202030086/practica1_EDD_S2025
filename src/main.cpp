@@ -9,42 +9,8 @@ using namespace std;
 #include "../include/Tablero.h"
 
 void jugar(Jugador *jugadores, int nJugadores, int ancho, int alto);
-void probarEstructurasJuego(Jugador *jugadores, int numJugadores, int ancho, int alto)
-{
-    std::cout << "\n\n--- INICIANDO PRUEBAS DE ESTRUCTURAS DE JUEGO ---" << std::endl;
-    std::cout << "\n[PRUEBA] Creando y llenando la Cola de Turnos..." << std::endl;
-    ColaTurnos colaDeTurnos;
-    for (int i = 0; i < numJugadores; i++)
-    {
-        colaDeTurnos.encolar(&jugadores[i]);
-    }
-    std::cout << "Estado inicial de la cola:" << std::endl;
-    colaDeTurnos.imprimirCola();
-    std::cout << "\n[PRUEBA] Simulando una rotacion de turno..." << std::endl;
-    Jugador *jugadorActual = colaDeTurnos.verFrente();
-    std::cout << "Le toca a: " << jugadorActual->getNombre() << std::endl;
-    Jugador *jugadorQueTermino = colaDeTurnos.desencolar();
-    colaDeTurnos.encolar(jugadorQueTermino);
-    std::cout << "Estado de la cola despues de una rotacion:" << std::endl;
-    colaDeTurnos.imprimirCola();
-    jugadorActual = colaDeTurnos.verFrente();
-    std::cout << "Ahora le toca a: " << jugadorActual->getNombre() << std::endl;
-    std::cout << ">> ¡Prueba de Cola de Turnos exitosa!" << std::endl;
-    std::cout << "\n[PRUEBA] Creando el Tablero de Juego..." << std::endl;
-    Tablero *tableroDeJuego = new Tablero(ancho, alto);
-    std::cout << "Tablero inicial de " << ancho << "x" << alto << ":" << std::endl;
-    tableroDeJuego->imprimirTablero();
-    std::cout << "\n[PRUEBA] Dibujando una linea de (0,0) a (0,1)..." << std::endl;
-    tableroDeJuego->dibujarLinea(0, 0, 0, 1, jugadorActual, TipoPoder::NINGUNO);
-    std::cout << "Tablero despues de dibujar la linea:" << std::endl;
-    tableroDeJuego->imprimirTablero();
-    std::cout << ">> ¡Prueba del Tablero exitosa!" << std::endl;
-    delete tableroDeJuego;
-    std::cout << "\n--- FIN DE LAS PRUEBAS ---" << std::endl;
-}
-
-void mostrarBienvenida()
-{
+bool verificarCaja(int f1, int col1, int f2, int col2, Jugador* jugador, Tablero* tablero);
+void mostrarBienvenida(){
     cout << "=====================================" << std::endl;
     cout << "=== BIENVENIDO A TIMBIRICHE / TOTITO CHINO POR YOHANA ===" << std::endl;
     cout << "=====================================" << std::endl
@@ -104,49 +70,136 @@ int main()
 
 void jugar(Jugador *jugadores, int nJugadores, int ancho, int alto)
 {
-    int fin = 5, accion;
-    int x1, y1, x2, y2;
+    // El nombre del parámetro en Tablero es (ancho, alto), pero tu creación es (alto, ancho).
+    // Para evitar confusión, vamos a crearlo en el orden correcto.
+    Tablero *tablero = new Tablero(ancho, alto);
+    
     ColaTurnos turnos;
-
-    for (int i = 0; i < nJugadores; i++)
-    {
+    for (int i = 0; i < nJugadores; i++) {
         turnos.encolar(&jugadores[i]);
     }
-    Tablero *tablero = new Tablero(alto, ancho);
-    while (fin > 0)
-    {
 
+    int lineasDibujadas = 0;
+    int maxLineas = (ancho - 1) * alto + ancho * (alto - 1);
+
+    // Bucle principal del juego
+    while (lineasDibujadas < maxLineas) {
+        system("clear || cls"); // Limpia la consola
+        bool turnoExtra = false; // Reiniciamos la bandera en cada turno
+        
         Jugador *turnoActual = turnos.verFrente();
-        cout << "\tTurno de: [" << turnoActual->getNombre() << "] Inicial: [" << turnoActual->getInicial() << "] ";
+        cout << "\t\033[92mTurno de: [" << turnoActual->getNombre() << "] Inicial: [" << turnoActual->getInicial() << "] Puntos: [" << turnoActual->getPuntaje() << "] ";
         turnoActual->verPoderes();
-       cout<<"\n";
+        cout<<"\033[00m"<<endl;
+        cout << "\n";
         tablero->imprimirTablero(false);
 
         cout << "\n1---Dibujar Linea" << endl;
         cout << "2---Usar Poder" << endl;
         cout << "3---Activar/Desactivar Clarividente" << endl;
         cout << "Elija la accion a realizar: ";
+        
+        int accion;
         cin >> accion;
-        if (accion == 1)
-        {
-            cout<<"\n\t\tFILAS Y COLUMNAS INCIAN EN CERO 0 \n"<<endl;
-            cout << "\tIngresando las coordenadas primer punto:   (FILA, COLUMNA)\n" << endl;
+        int f1_usuario, c1_usuario, f2_usuario, c2_usuario;
+        if (accion == 1) {
             
-            cout << "Ingrese el numero de fila ";
-            cin >> x1;
-            cout << "Ingrese el numero de columna ";
-            cin >> y1;
-            cout << "\tIngresando las coordenadas Segundo punto: (FILA, COLUMNA)\n" << endl;
-            cout << "Ingrese el numero de la fila ";
-            cin >> x2;
-            cout << "Ingrese el numero de columna ";
-            cin >> y2;
-            tablero->dibujarLinea(x1,y1,x2,y2, turnoActual, TipoPoder::NINGUNO);
-            
+            bool lineaDibujadaConExito;
 
+            do {
+                cout << "\n\t\tFILAS Y COLUMNAS INCIAN EN CERO 0 \n" << endl;
+                cout << "\tIngresando las coordenadas primer punto:   (FILA, COLUMNA)\n" << endl;
+                cout << "Ingrese el numero de fila "; cin >> f1_usuario;
+                cout << "Ingrese el numero de columna "; cin >> c1_usuario;
+                cout << "\tIngresando las coordenadas Segundo punto: (FILA, COLUMNA)\n" << endl;
+                cout << "Ingrese el numero de la fila "; cin >> f2_usuario;
+                cout << "Ingrese el numero de columna "; cin >> c2_usuario;
+
+                int r1 = f1_usuario; 
+                int c1 = c1_usuario;
+                int r2 = f2_usuario;
+                int c2 = c2_usuario;
+                
+                // Ahora llamamos a los métodos del tablero con las coordenadas INTERNAS (r, c)
+                lineaDibujadaConExito = tablero->dibujarLinea(r1, c1, r2, c2, turnoActual, TipoPoder::NINGUNO);
+
+            } while (!lineaDibujadaConExito);
+
+            // Obtenemos las coordenadas internas de la línea recién dibujada para la verificación
+            int r1_traducido = f1_usuario;
+            int c1_traducido = c1_usuario;
+            int r2_traducido = f2_usuario;
+            int c2_traducido = c2_usuario;
+
+            // Llamamos a la función auxiliar con las coordenadas ya traducidas
+            turnoExtra = verificarCaja(r1_traducido, c1_traducido, r2_traducido, c2_traducido, turnoActual, tablero);
+            lineasDibujadas++;
+
+        } else if (accion == 2) {
+             int valor = 2;
+        turnoActual->verPoderes();
+        TipoPoder poder = turnoActual->usarPoder();
+        cout << "\nPoder a Usar: " << poderAString(poder) << "\n"
+             << endl;
+             cout << "Presiona Enter para continuar...";
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin.get();
+        if (poder == TipoPoder::DOBLE_LINEA)
+        {
+            while (valor > 0)
+            {
+                do{
+                cout << "\n\t\tFILAS Y COLUMNAS INCIAN EN CERO 0 \n"<< endl;
+                cout << "\tIngresando las coordenadas primer punto:   (FILA, COLUMNA)\n"<< endl;
+
+                cout << "Ingrese el numero de fila ";
+                cin >> f1_usuario;
+                cout << "Ingrese el numero de columna ";
+                cin >> c1_usuario;
+                cout << "\tIngresando las coordenadas Segundo punto: (FILA, COLUMNA)\n"<< endl;
+                cout << "Ingrese el numero de la fila ";
+                cin >> f2_usuario;
+                cout << "Ingrese el numero de columna ";
+                cin >> c2_usuario;                   
+            }while(!tablero->dibujarLinea(f1_usuario, c1_usuario, f2_usuario, c2_usuario, turnoActual, TipoPoder::NINGUNO));
+                if(valor>1){
+                        tablero->imprimirTablero();
+                    }
+                valor--;
+            }
         }
-        Jugador*jugadorRecienTermino= turnos.desencolar();
-        turnos.encolar(jugadorRecienTermino);
-        fin--;
+        }
+
+        // Esta lógica de rotación de turno es la correcta
+        if (!turnoExtra) {
+            Jugador *jugadorRecienTermino = turnos.desencolar();
+            turnos.encolar(jugadorRecienTermino);
+        }
+    }
+
+    // Limpieza final
+    delete tablero;
+}
+
+bool verificarCaja(int fila1, int col1, int fila2, int col2, Jugador* jugador, Tablero* tablero){
+    bool esHorizontal = (fila1 == fila2);
+    int f_origen = min(fila1, fila2);
+    int col_origen = min(col1, col2);
+
+    int cajasCerradas = tablero->verificarYAsignarCaja(f_origen, col_origen, esHorizontal, jugador);
+
+    if(cajasCerradas > 0){
+        for (int i = 0; i < cajasCerradas; i++) {
+            jugador->incrementarPuntaje();
+        }
+        cout << "\n\033[32m¡Punto y turno extra para " << jugador->getNombre() << "!\033[0m" << endl;
+    
+        cout << "Presiona Enter para continuar...";
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin.get();
+        return true;
+    } else {
+        // No es necesario un mensaje aquí, ya que es el resultado normal.
+        return false;
     }
 }

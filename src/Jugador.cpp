@@ -47,11 +47,12 @@ void Jugador::agregarPoder(TipoPoder p){
 }
 TipoPoder Jugador::usarPoder(){
     if(this->poderes->estaVacia()){
-        cerr<<" Error: "<<this->nombre<<" No tiene poderes "<<endl;
+        cerr<<" \033[31mError: "<<this->nombre<<" No tiene poderes\033[0m "<<endl;
+        return TipoPoder::NINGUNO;
 
     }
     TipoPoder poderUsado=this->poderes->quitar();
-    cout<<this->nombre<<" Ha usado el poder: "<< poderAString(poderUsado)<<endl;
+    //cout<<this->nombre<<" Ha usado el poder: "<< poderAString(poderUsado)<<endl;
 
     return poderUsado;
 }
